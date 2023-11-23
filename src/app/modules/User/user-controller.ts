@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { createUserIntoDb, getAllUsersFromDb } from "./user-services";
+import {
+  createUserIntoDb,
+  getAllUsersFromDb,
+  getSingleUserFromDb,
+} from "./user-services";
 import userValidationSchema from "./user-validation";
 
 // Creating user
@@ -57,4 +61,27 @@ const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-export { createUser, getAllUsers };
+// Fetching a single user
+const getSingleUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await getSingleUserFromDb(Number(userId));
+
+    res.status(200).json({
+      success: true,
+      message: "User fetched successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || "Something went wrong",
+      error: {
+        code: 404,
+        description: "User not found!",
+      },
+    });
+  }
+};
+
+export { createUser, getAllUsers, getSingleUser };

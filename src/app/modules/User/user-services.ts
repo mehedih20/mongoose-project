@@ -1,7 +1,7 @@
 import { User } from "../user-model";
 import { TUser } from "./user-interface";
 
-// creating a user in db
+// Creating a user in db
 const createUserIntoDb = async (user: TUser) => {
   //checking if user with the same userId exist
   if (await User.isUserExists(user.userId)) {
@@ -11,6 +11,7 @@ const createUserIntoDb = async (user: TUser) => {
   return result;
 };
 
+// Getting all users from db
 const getAllUsersFromDb = async () => {
   const result = await User.find().select(
     "username fullName age email address"
@@ -18,4 +19,14 @@ const getAllUsersFromDb = async () => {
   return result;
 };
 
-export { createUserIntoDb, getAllUsersFromDb };
+// Getting a single user in db
+const getSingleUserFromDb = async (userId: number) => {
+  if (await User.isUserExists(userId)) {
+    const result = await User.findOne({ userId }).select("-password");
+    return result;
+  } else {
+    throw new Error("User not found");
+  }
+};
+
+export { createUserIntoDb, getAllUsersFromDb, getSingleUserFromDb };
