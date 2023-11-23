@@ -5,9 +5,9 @@ import {
   TUserFullName,
   TUserOrder,
   UserModel,
-} from "./User/user-interface";
+} from "./user-interface";
 import bcrypt from "bcrypt";
-import config from "../config";
+import config from "../../config";
 
 const userFullNameSchema = new Schema<TUserFullName>({
   firstName: { type: String, required: true },
@@ -58,7 +58,7 @@ const userSchema = new Schema<TUser, UserModel>({
 userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(
     this.password,
-    Number(config.bcrypt_salt_rounds)
+    Number(config.bcrypt_salt_rounds),
   );
 
   next();

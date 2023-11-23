@@ -1,4 +1,4 @@
-import { User } from "../user-model";
+import { User } from "./user-model";
 import { TUser, TUserOrder } from "./user-interface";
 
 // Creating a user in db
@@ -14,7 +14,7 @@ const createUserIntoDb = async (user: TUser) => {
 // Getting all users from db
 const getAllUsersFromDb = async () => {
   const result = await User.find().select(
-    "username fullName age email address"
+    "-_id username fullName age email address",
   );
   return result;
 };
@@ -39,7 +39,7 @@ const updateSingleUserFromDb = async (userId: number, userData: TUser) => {
       },
       {
         new: true,
-      }
+      },
     );
     return result;
   } else {
@@ -63,7 +63,7 @@ const addOrderToUserDb = async (userId: number, orderData: TUserOrder) => {
     const result = await User.updateOne(
       { userId },
       { $addToSet: { orders: orderData } },
-      { upsert: true }
+      { upsert: true },
     );
     return result;
   } else {

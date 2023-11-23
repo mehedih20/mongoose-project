@@ -129,7 +129,7 @@ const updateSingleUser = async (req: Request, res: Response) => {
 const deleteUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const result = await deleteUserFromDb(Number(userId));
+    await deleteUserFromDb(Number(userId));
 
     res.status(200).json({
       success: true,
@@ -153,7 +153,7 @@ const addOrderToUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const orderData = req.body;
-    const result = await addOrderToUserDb(Number(userId), orderData);
+    await addOrderToUserDb(Number(userId), orderData);
 
     res.status(200).json({
       success: true,
@@ -172,12 +172,11 @@ const addOrderToUser = async (req: Request, res: Response) => {
   }
 };
 
-//Get user orders
+//Fetch user orders
 const getUserOrder = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const result = await getUserOrderFromDb(Number(userId));
-    console.log(result);
 
     res.status(200).json({
       success: true,
