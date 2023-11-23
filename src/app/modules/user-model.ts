@@ -1,31 +1,32 @@
 import { Schema, model } from "mongoose";
 import {
-  User,
-  UserAddress,
-  UserFullName,
-  UserOrder,
+  TUser,
+  TUserAddress,
+  TUserFullName,
+  TUserOrder,
+  UserModel,
 } from "./User/user-interface";
 import bcrypt from "bcrypt";
 import config from "../config";
 
-const userFullNameSchema = new Schema<UserFullName>({
+const userFullNameSchema = new Schema<TUserFullName>({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
 });
 
-const userAddressSchema = new Schema<UserAddress>({
+const userAddressSchema = new Schema<TUserAddress>({
   street: { type: String, required: true },
   city: { type: String, required: true },
   country: { type: String, required: true },
 });
 
-const userOrderSchema = new Schema<UserOrder>({
+const userOrderSchema = new Schema<TUserOrder>({
   productName: { type: String, required: true },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
 });
 
-const userSchema = new Schema<User>({
+const userSchema = new Schema<TUser, UserModel>({
   userId: { type: Number, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -62,8 +63,10 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.post("save", function (doc, next) {
-  next();
-});
+//Creating custom static method for checking existing user
+userSchema.statics.isUserExists = async function (userId: number) {
+  const existingUser = await User.findOne({ userId });
+  return existingUser;
+};
 
-export const UserModel = model<User>("User", userSchema);
+export const User = model<TUser, UserModel>("User", userSchema);
