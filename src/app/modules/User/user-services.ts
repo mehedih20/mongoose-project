@@ -29,4 +29,27 @@ const getSingleUserFromDb = async (userId: number) => {
   }
 };
 
-export { createUserIntoDb, getAllUsersFromDb, getSingleUserFromDb };
+// Update a single user
+const updateSingleUserFromDb = async (userId: number, userData: TUser) => {
+  if (await User.isUserExists(userId)) {
+    const result = await User.findOneAndUpdate(
+      { userId },
+      {
+        $set: userData,
+      },
+      {
+        new: true,
+      }
+    );
+    return result;
+  } else {
+    throw new Error("User not found");
+  }
+};
+
+export {
+  createUserIntoDb,
+  getAllUsersFromDb,
+  getSingleUserFromDb,
+  updateSingleUserFromDb,
+};

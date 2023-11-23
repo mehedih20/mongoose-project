@@ -3,6 +3,7 @@ import {
   createUserIntoDb,
   getAllUsersFromDb,
   getSingleUserFromDb,
+  updateSingleUserFromDb,
 } from "./user-services";
 import userValidationSchema from "./user-validation";
 
@@ -84,4 +85,40 @@ const getSingleUser = async (req: Request, res: Response) => {
   }
 };
 
-export { createUser, getAllUsers, getSingleUser };
+// Updating a single user
+const updateSingleUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const updatedData = req.body;
+    const result = await updateSingleUserFromDb(Number(userId), updatedData);
+
+    const responseObj = {
+      userId: result?.userId,
+      username: result?.username,
+      fullName: result?.fullName,
+      age: result?.age,
+      email: result?.email,
+      isActive: result?.isActive,
+      hobbies: result?.hobbies,
+      address: result?.address,
+      orders: result?.orders ? result?.orders : [],
+    };
+
+    res.status(200).json({
+      success: true,
+      message: "User updated successfully!",
+      data: responseObj,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || "Something went wrong",
+      error: {
+        code: 404,
+        description: "User not found!",
+      },
+    });
+  }
+};
+
+export { createUser, getAllUsers, getSingleUser, updateSingleUser };
