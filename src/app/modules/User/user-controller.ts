@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import {
+  addOrderToUserDb,
   createUserIntoDb,
   deleteUserFromDb,
   getAllUsersFromDb,
   getSingleUserFromDb,
+  getUserOrderFromDb,
   updateSingleUserFromDb,
 } from "./user-services";
 import userValidationSchema from "./user-validation";
@@ -145,4 +147,60 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
-export { createUser, getAllUsers, getSingleUser, updateSingleUser, deleteUser };
+// Add order to an user
+const addOrderToUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const orderData = req.body;
+    const result = await addOrderToUserDb(Number(userId), orderData);
+
+    res.status(200).json({
+      success: true,
+      message: "Order created successfully!",
+      data: null,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || "Something went wrong",
+      error: {
+        code: 404,
+        description: "User not found!",
+      },
+    });
+  }
+};
+
+//Get user orders
+const getUserOrder = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await getUserOrderFromDb(Number(userId));
+    console.log(result);
+
+    res.status(200).json({
+      success: true,
+      message: "Order fetched successfully!",
+      data: { orders: result?.orders },
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || "Something went wrong",
+      error: {
+        code: 404,
+        description: "User not found!",
+      },
+    });
+  }
+};
+
+export {
+  createUser,
+  getAllUsers,
+  getSingleUser,
+  updateSingleUser,
+  deleteUser,
+  addOrderToUser,
+  getUserOrder,
+};
