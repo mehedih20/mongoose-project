@@ -4,6 +4,7 @@ import {
   createUserIntoDb,
   deleteUserFromDb,
   getAllUsersFromDb,
+  getOrderTotalPriceFromDb,
   getSingleUserFromDb,
   getUserOrderFromDb,
   updateSingleUserFromDb,
@@ -195,6 +196,31 @@ const getUserOrder = async (req: Request, res: Response) => {
   }
 };
 
+//Get user orders total price
+const getOrderTotalPrice = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await getOrderTotalPriceFromDb(Number(userId));
+
+    res.status(200).json({
+      success: true,
+      message: "Total price calculated successfully!",
+      data: {
+        totalPrice: result,
+      },
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || "Something went wrong",
+      error: {
+        code: 404,
+        description: "User not found!",
+      },
+    });
+  }
+};
+
 export {
   createUser,
   getAllUsers,
@@ -203,4 +229,5 @@ export {
   deleteUser,
   addOrderToUser,
   getUserOrder,
+  getOrderTotalPrice,
 };

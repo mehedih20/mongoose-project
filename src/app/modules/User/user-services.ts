@@ -70,11 +70,31 @@ const addOrderToUserDb = async (userId: number, orderData: TUserOrder) => {
     throw new Error("User not found");
   }
 };
-//Add order for an user
+
+//Fetch order from db for an user
 const getUserOrderFromDb = async (userId: number) => {
   if (await User.isUserExists(userId)) {
     const result = await User.findOne({ userId }).select("orders");
     return result;
+  } else {
+    throw new Error("User not found");
+  }
+};
+
+//Calculate total price of orders done by an user
+const getOrderTotalPriceFromDb = async (userId: number) => {
+  if (await User.isUserExists(userId)) {
+    const result = await User.findOne({ userId }).select("orders");
+
+    //Calculating total price of orders if user exists
+    let totalPrice: number = 0;
+    if (result) {
+      result?.orders?.forEach((item) => {
+        totalPrice += item.price * item.quantity;
+      });
+    }
+
+    return totalPrice;
   } else {
     throw new Error("User not found");
   }
@@ -88,4 +108,5 @@ export {
   deleteUserFromDb,
   addOrderToUserDb,
   getUserOrderFromDb,
+  getOrderTotalPriceFromDb,
 };

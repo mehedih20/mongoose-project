@@ -4,6 +4,7 @@ import {
   createUser,
   deleteUser,
   getAllUsers,
+  getOrderTotalPrice,
   getSingleUser,
   getUserOrder,
   updateSingleUser,
@@ -18,5 +19,6 @@ router.put("/:userId", updateSingleUser);
 router.delete("/:userId", deleteUser);
 router.put("/:userId/orders", addOrderToUser);
 router.get("/:userId/orders", getUserOrder);
+router.get("/:userId/orders/total-price", getOrderTotalPrice);
 
 export const UserRoutes = router;
