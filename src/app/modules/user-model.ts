@@ -50,6 +50,7 @@ const userSchema = new Schema<TUser, UserModel>({
   },
   orders: {
     type: [userOrderSchema],
+    required: false,
   },
 });
 

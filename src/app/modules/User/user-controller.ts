@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   createUserIntoDb,
+  deleteUserFromDb,
   getAllUsersFromDb,
   getSingleUserFromDb,
   updateSingleUserFromDb,
@@ -121,4 +122,27 @@ const updateSingleUser = async (req: Request, res: Response) => {
   }
 };
 
-export { createUser, getAllUsers, getSingleUser, updateSingleUser };
+//Deleting user
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await deleteUserFromDb(Number(userId));
+
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully!",
+      data: null,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || "Something went wrong",
+      error: {
+        code: 404,
+        description: "User not found!",
+      },
+    });
+  }
+};
+
+export { createUser, getAllUsers, getSingleUser, updateSingleUser, deleteUser };
