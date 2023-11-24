@@ -9,7 +9,10 @@ import {
   getUserOrderFromDb,
   updateSingleUserFromDb,
 } from "./user-services";
-import userValidationSchema from "./user-validation";
+import {
+  userValidationSchema,
+  userOrderValidationSchema,
+} from "./user-validation";
 
 // Creating user
 const createUser = async (req: Request, res: Response) => {
@@ -94,7 +97,11 @@ const updateSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const updatedData = req.body;
-    const result = await updateSingleUserFromDb(Number(userId), updatedData);
+
+    // Validating the update user data using zod
+    const zodParsedData = userValidationSchema.parse(updatedData);
+
+    const result = await updateSingleUserFromDb(Number(userId), zodParsedData);
 
     const responseObj = {
       userId: result?.userId,
@@ -153,7 +160,11 @@ const addOrderToUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const orderData = req.body;
-    await addOrderToUserDb(Number(userId), orderData);
+
+    // Validating order data using zod
+    const zodParsedData = userOrderValidationSchema.parse(orderData);
+
+    await addOrderToUserDb(Number(userId), zodParsedData);
 
     res.status(200).json({
       success: true,

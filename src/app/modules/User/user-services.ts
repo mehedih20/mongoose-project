@@ -1,5 +1,7 @@
 import { User } from "./user-model";
 import { TUser, TUserOrder } from "./user-interface";
+import bcrypt from "bcrypt";
+import config from "../../config";
 
 // Creating a user in db
 const createUserIntoDb = async (user: TUser) => {
@@ -32,6 +34,14 @@ const getSingleUserFromDb = async (userId: number) => {
 // Update a single user
 const updateSingleUserFromDb = async (userId: number, userData: TUser) => {
   if (await User.isUserExists(userId)) {
+    //hashing the password if edited
+    if (userData.password) {
+      userData.password = await bcrypt.hash(
+        userData.password,
+        Number(config.bcrypt_salt_rounds),
+      );
+    }
+
     const result = await User.findOneAndUpdate(
       { userId },
       {
